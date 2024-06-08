@@ -1,4 +1,4 @@
-let ARSENAL = {
+export let ARSENAL = {
     city: 'London',
     stadium: {name: 'Emirates Stadium', capacity: 60704},
     manager: {name: 'Michal Arteta', style: 'Flamboyant', rating: 7},
