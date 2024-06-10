@@ -8,9 +8,7 @@ let teams = {'Arsenal': ARSENAL, 'Aston Villa': ASTON_VILLA}
 for (let team in teams) {
     console.log(team)
     for (let player of teams[team]['players']) {
-        if (player.gls > 9) {
-            console.log(player.surname + ': ' + player.gls)
-            }
+            console.log(player.surname)
     }
 }
 
@@ -21,7 +19,7 @@ let home_score = 0
 let away_score = 0
 
 let home_def_modi = 1
-let away_def_modi = 0.5
+let away_def_modi = 0.9
 
 function updateMinute() {
     if (min <= max_minutes) {
@@ -29,11 +27,11 @@ function updateMinute() {
         min++;
 
         for (let player of ARSENAL.players) {
-            let goals_per_game = player.gls / player.mp
+            let goals_per_min = player.gls / player.min
         
             //console.log(player.surname)
         
-            if (playerScores(goals_per_game, away_def_modi)) {
+            if (playerScores(goals_per_min, min, home_def_modi, player.surname)) {
                 let ticker = document.getElementById('ticker')
                 let message = document.createElement('p')
                 message.innerText = `${min}' !!GOAL!! to Arsenal\n ${player.surname} has scored`
@@ -46,11 +44,11 @@ function updateMinute() {
         }
 
         for (let player of ASTON_VILLA.players) {
-            let goals_per_game = player.gls / player.mp
+            let goals_per_min = player.gls / player.min
         
             //console.log(player.surname)
         
-            if (playerScores(goals_per_game, home_def_modi)) {
+            if (playerScores(goals_per_min, min, home_def_modi, player.surname)) {
                 let ticker = document.getElementById('ticker')
                 let message = document.createElement('p')
                 message.innerText = `${min}' !!GOAL!! to Aston Villa\n ${player.surname} has scored`
@@ -62,7 +60,7 @@ function updateMinute() {
             
         }
 
-        setTimeout(updateMinute, 10); // Schedule the next update in x milliseconds
+        setTimeout(updateMinute, 100); // Schedule the next update in x milliseconds
     } else {
         console.log(home_score + ' - ' + away_score)
         home_score = 0
@@ -71,18 +69,22 @@ function updateMinute() {
     }
 }
 
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 1; i++) {
     min = 0
     updateMinute()
 }
 
-function playerScores(player_goals_per_game, defense_modifier=1) {
+function playerScores(player_goals_per_min, game_min, defense_modifier=1, player_name = 'No Name') {
     let rng = Math.random()
-    let likelihood = (player_goals_per_game / 100 * defense_modifier) + 0.001
+    if (game_min > 45) {
+        game_min - 45
+    }
+    let likelihood = (player_goals_per_min / 100 * defense_modifier) + 0.0001 + (game_min / 45 / 1000)
 
-    //console.log(rng + ' / ' + likelihood)
+    
 
     if (rng < likelihood) {
+        console.log(`RNG: ${rng.toFixed(6)} / ${player_name} to score ${likelihood.toFixed(6)}`)
         return true
     } else {
         return false
